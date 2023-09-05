@@ -4,8 +4,71 @@
     Write
 {% endblock %}
 
+{% block script %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            let chapter_body = document.querySelector("#chapter_body").innerHTML
+            windowed = document.querySelector(".windowed");
+            document.querySelector(".btn-chapter").addEventListener("click", function(){
+                windowed.style.display = "grid"
+            });
+        });
+    </script>
+    
+{% endblock %}
+
 {% block main %}
-    <div>
-        TODO
-    </div>
+    {% if 1 %}
+        <div class="new_chapter windowed">
+            <form class="form chapter" action="/new_chapter" method="post">
+                <input type="hidden" value="{{ current_title }}" required>
+                <label>Chapter Title</label>
+                <input type="text" required>
+            </form>
+        </div>
+        <span id="chapter_body" class="hidden">{{ chapter_body }}</span>
+        <div class="grid-write">
+            <div class="chapters">
+                <ul>
+                    {% for chapter in chapters %}
+                    <li>
+                        <span class="chapter-index">{{ loop.index + 1 | romans }}</span>
+                        <span class="chapter-name">{{ chapter }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="documento">
+                <div class="btn-chapter">
+                    <svg id="icon_new_chapter" width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="17.5" cy="17.5" r="17.5" fill="#FFC0A3"/>
+                        <path d="M17.5 11.6667V24.6296" stroke="#140D1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M23.9815 18.1481L11.0185 18.1481" stroke="#140D1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>New Chapter</span>
+                </div>
+                <div class="documento-escrita">
+                    <form action="/save" method="post">
+                        <h3>{{ current_index | romans }}</h3>
+                        <h1>{{ current_chapter }}</h1>
+                        <input name="chapter_body" class="folha" type="text">
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="new_chapter">
+            <form class="form first_chapter" action="/new_chapter" method="post">
+                <label>Book Title</label>
+                <input name="book_title" type="text" required>
+                <label>Chapter Title</label>
+                <input name="chapter_name" type="text" required>
+                <input name="chapter_index" type="hidden" value="{current_index}">
+                <input name="chapter_body" type="hidden" value="    ">
+                <button type="submit">Create chapter</button>
+            </form>
+        </div>
+    {% endif %}
+
+        
 {% endblock %}

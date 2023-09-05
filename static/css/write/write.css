@@ -1,0 +1,11 @@
+.grid-write {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
+
+.windowed {
+    display: none;
+    grid-template-columns: 1fr;
+    place-content: center;
+    position: absolute;
+}

@@ -1,6 +1,7 @@
 import sys
 import re
 import sqlite3
+import random
 from flask import Flask, flash, render_template, request, redirect, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -9,8 +10,6 @@ from helpers import apology, login_required, romans
 
 # Configure application 
 app = Flask(__name__)
-
-
 
 # Configure filter for roman algorisms
 app.jinja_env.filters["romans"] = romans
@@ -38,8 +37,7 @@ def index():
         state = session["user_id"]
     except KeyError:
         return render_template("index.html", value=133)
-    redirect("/writer")
-    
+    return redirect("/writer")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -118,6 +116,15 @@ def login():
 @login_required
 def logout():
     """Terminates user session"""
+    # First we call save
+    save()
+
+    # con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    # db = con.cursor()
+
+
+    # con.commit()
+    # con.close()
     # Forget any user_id
     session.clear()
 
@@ -125,44 +132,113 @@ def logout():
     return redirect("/")
 
 
-@app.route("/write", methods=["GET", "POST"])
+@app.route("/write")
 @login_required
 def write():
     """Handles the written information, loading and saving to the database."""
-    chapter_titles = []
-    chapter_count = 0
-
-    if request.method == "POST":
-        # Save to database logic
-        ...
-    # Load information from database
-    ...
-    # then render the page
-
     # Start database
     con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
     # Create cursor
     db = con.cursor()
-    
+
+    # Load information from database
+    try:
+        current_title, current_chapter = db.execute("SELECT title, chapter_name FROM active WHERE user_id = ?", (session["user_id"],))
+    except ValueError:
+        current_title = ""
+        current_chapter = ""
+        current_index = 1
+        
+
+    # then render the page
+
+    chapters = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
     username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    if current_chapter:
+        chapter_body = db.execute("SELECT chapter_body FROM books WHERE chapter_name = ?", (current_chapter,)).fetchone()[0]
+        current_index = chapters.index(current_chapter)
+    else:
+        # if there is no chapters yet
+        chapter_body = ""
+
+    con.commit()
     con.close()
     
-    return render_template("write.html", username=username, chapter_count=chapter_count, chapter_titles=chapter_titles)
+    return render_template("write.html", 
+        username=username, 
+        chapters=chapters, 
+        chapter_body=chapter_body, 
+        current_title=current_title, 
+        current_chapter=current_chapter,
+        current_index=current_index,
+        wtoken=1
+    )
 
 
-@app.route("/new_book", methods=["POST"])
+@app.route("/save", methods=["POST"])
 @login_required
-def new_book():
-    """Creates a new book given its title"""
-    title = request.form.get("book_title")
-    return redirect("/new_chapter")
+def save():
+    """Saves progress to database"""
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    # hidden fields sent through request along with the body of text
+    t = (request.form.get("chapter_body"), session["user_id"], request.form.get("book_title"), request.form.get("chapter_name"),)
+    db.execute("UPDATE books SET chapter_body = ? WHERE user_id = ? AND title = ? AND chapter_name = ?", t)
+
+    con.commit()
+    con.close()
+    return flash("Saved!", "save")
 
 
 @app.route("/new_chapter", methods=["POST"])
 @login_required
 def new_chapter():
     """Create new chapter in database given its title"""
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    try:
+        index = db.execute("SELECT chapter_index FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index DESC", (session["user_id"], request.form.get("book_title"))).fetchone()[0]
+        index += 1
+    except TypeError:
+        index = 1
+
+    
+
+    # title must be either prompted by user in first access or stored in a hidden field in /write
+    save_data = (session["user_id"], request.form.get("book_title"), request.form.get("chapter_name"), index, request.form.get("chapter_body"),)
+
+    # save new chapter to database in the books Table
+    db.execute("INSERT INTO books(user_id, title, chapter_name, chapter_index, chapter_body) VALUES (?, ?, ?, ?, ?)", save_data)
+    db.execute("INSERT INTO active(title, chapter_name) VALUES(?, ?) WHERE user_id = ?", (request.form.get("book_title"), request.form.get("chapter_name"), session["user_id"]))
+    con.commit()
+    con.close()
+    flash("Chapter created!", "save")
+    return redirect("/write")
+
+
+@app.route("/change_order", methods=["POST"])
+@login_required
+def change_order():
     ...
+
+
+@app.route("/set_chapter", methods=["POST"])
+@login_required
+def set_chapter():
+    """Set the active chapter when the user clicks on it"""
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    chapter_name = request.form.get("chapter_name")
+    # book title must be a hidden field
+    title = request.form.get("book_title")
+    db.execute("UPDATE active SET chapter_name = ? WHERE user_id = ?", (chapter_name, session["user_id"]))
+
+    con.commit()
+    con.close()
+
     return redirect("/write")
 
 

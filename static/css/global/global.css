@@ -35,6 +35,10 @@ body {
     font-family: sans-serif;
 }
 
+main {
+    position: inherit;
+}
+
 form input {
     display: block;
 }
@@ -86,4 +90,18 @@ nav {
 
 #drop-ul li:first-child {
     border-bottom: 1px solid white;
+}
+
+.div-flashes {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    background-color: green;
+    color: white;
+    height: 50px;
+    place-items: center;
+}
+
+.hidden {
+    display: none;
 }
