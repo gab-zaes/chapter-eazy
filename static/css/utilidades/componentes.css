@@ -1,0 +1,23 @@
+.container {
+    box-sizing: border-box;
+    padding-left: 20px;
+    padding-right: 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.botao {
+    padding: 16px 20px;
+    border-radius: 25px;
+}
+
+.primario {
+    color: #232305;
+    background-color: var(--dest-yellow-1);
+}
+
+.outline {
+    border: 2px solid var(--dest-blue);
+    color: var(--dest-blue);
+}

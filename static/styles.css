@@ -1,0 +1,18 @@
+/* Global */
+@import url("./css/global/global.css");
+
+/* Utilidades */
+@import url("./css/utilidades/cores.css");
+@import url("./css/utilidades/tipografia.css");
+@import url("./css/utilidades/componentes.css");
+
+/* Home */
+@import url("./css/home/home.css");
+
+/* Register */
+@import url("./css/register/register.css");
+
+
+
+
+

@@ -1,0 +1,89 @@
+h1, 
+h2, 
+p, 
+body,
+html, 
+ul, 
+li, 
+nav, 
+header {
+    margin: 0;
+}
+
+button {
+    border-style: none;
+    box-shadow: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul, li {
+    list-style: none;
+}
+
+body {
+    background-color: var(--c1);
+    color: white;
+    font-family: sans-serif;
+}
+
+form input {
+    display: block;
+}
+
+.header-bg {
+    background-color: var(--c1);
+    border-bottom: 1px solid white;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 64px;
+    padding-bottom: 64px;
+    position: relative;
+}
+
+.login-area ul,
+nav ul,
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+}
+
+#drop-ul {
+    display: none;
+    position: absolute;
+    width: 150px;
+    height: fit-content;
+    right: 20px;
+    background: var(--c1);
+    border: 1px solid var(--c11);
+    text-align: right;
+    border-radius: 5px;
+    padding: 0px;
+}
+
+.dropdown a {
+    display: block;
+    padding: 16px;
+}
+
+#drop-ul li {
+    width: 150px;
+}
+
+#drop-ul li:first-child {
+    border-bottom: 1px solid white;
+}
