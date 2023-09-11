@@ -1,0 +1,38 @@
+.export-bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.export-bg fieldset{
+    background-color: var(--c2);
+    height: 400px;
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    place-content: center;
+}
+
+.export-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    place-content: center;
+    padding: 20px;
+    flex-direction: column;
+}
+
+.export-form div {
+    display: flex;
+    column-gap: 40px;
+    row-gap: 10px;
+    place-items: center;
+}
+
+.export-form div div {
+    display: flex;
+    flex-direction: column;
+    place-self: center;
+}

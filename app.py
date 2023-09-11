@@ -1,7 +1,7 @@
 import sys
 import re
 import sqlite3
-import random
+# import random
 from flask import Flask, flash, render_template, request, redirect, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -37,12 +37,15 @@ def index():
         state = session["user_id"]
     except KeyError:
         return render_template("index.html", value=133)
-    return redirect("/writer")
+    return redirect("/write")
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
+    #Forget any user_id
+    session.clear()
+
     if request.method == "POST":
         email = request.form.get("email")
         username = request.form.get("username")
@@ -77,7 +80,6 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Start user session"""
-
     #Forget any user_id
     session.clear()
 
@@ -140,29 +142,42 @@ def write():
     con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
     # Create cursor
     db = con.cursor()
+    chapters = []
 
     # Load information from database
     try:
-        current_title, current_chapter = db.execute("SELECT title, chapter_name FROM active WHERE user_id = ?", (session["user_id"],))
-    except ValueError:
+        current_title, current_chapter = db.execute("SELECT title, chapter_name FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()
+    except (ValueError, TypeError):
         current_title = ""
         current_chapter = ""
         current_index = 1
+    print(current_title, current_chapter)
         
 
     # then render the page
 
-    chapters = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
+    rows = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
+    chapters = [row[0] for row in rows]
+    if chapters is None:
+        chapters = []
     username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
     if current_chapter:
         chapter_body = db.execute("SELECT chapter_body FROM books WHERE chapter_name = ?", (current_chapter,)).fetchone()[0]
-        current_index = chapters.index(current_chapter)
+        current_index = 1 + chapters.index(current_chapter)
     else:
         # if there is no chapters yet
-        chapter_body = ""
+        current_index = 1
+        chapter_body = "    "
+
+    if chapter_body is None:
+        chapter_body = "    "
+
+    chapter_count = len(chapters)
 
     con.commit()
     con.close()
+
+    
     
     return render_template("write.html", 
         username=username, 
@@ -171,7 +186,7 @@ def write():
         current_title=current_title, 
         current_chapter=current_chapter,
         current_index=current_index,
-        wtoken=1
+        chapter_count=chapter_count,
     )
 
 
@@ -188,7 +203,8 @@ def save():
 
     con.commit()
     con.close()
-    return flash("Saved!", "save")
+    flash("Saved!", "save")
+    return redirect("/write")
 
 
 @app.route("/new_chapter", methods=["POST"])
@@ -204,24 +220,51 @@ def new_chapter():
     except TypeError:
         index = 1
 
-    
-
     # title must be either prompted by user in first access or stored in a hidden field in /write
     save_data = (session["user_id"], request.form.get("book_title"), request.form.get("chapter_name"), index, request.form.get("chapter_body"),)
 
     # save new chapter to database in the books Table
     db.execute("INSERT INTO books(user_id, title, chapter_name, chapter_index, chapter_body) VALUES (?, ?, ?, ?, ?)", save_data)
-    db.execute("INSERT INTO active(title, chapter_name) VALUES(?, ?) WHERE user_id = ?", (request.form.get("book_title"), request.form.get("chapter_name"), session["user_id"]))
+    db.execute("REPLACE INTO active(user_id, title, chapter_name) VALUES(?, ?, ?)", (session["user_id"], request.form.get("book_title"), request.form.get("chapter_name"),))
     con.commit()
     con.close()
     flash("Chapter created!", "save")
+    
     return redirect("/write")
 
 
 @app.route("/change_order", methods=["POST"])
 @login_required
 def change_order():
-    ...
+    """Changes the order of the Chapters"""
+    # Start database
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    # Create cursor
+    db = con.cursor()
+
+    try:
+        old = int(request.form.get("old_index"))
+        new = int(request.form.get("new_index"))
+        current_title = request.form.get("current_title")
+    except ValueError:
+        flash("invalid input", "warning")
+        return write
+
+    rows = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
+    chapters = [row[0] for row in rows]
+
+    if new > len(chapters) or old > len(chapters) or new < 1 or old < 1:
+        return write()
+    else:
+        tmp = chapters.pop(old - 1)
+        chapters.insert(new - 1, tmp)
+    # change positions in database
+    for i, chapter in enumerate(chapters):
+        res = db.execute("UPDATE books SET chapter_index = ? WHERE chapter_name = ? AND user_id = ?", (i + 1, chapter, session["user_id"]))
+
+    con.commit()
+    con.close()
+    return redirect("/write")
 
 
 @app.route("/set_chapter", methods=["POST"])
@@ -231,9 +274,10 @@ def set_chapter():
     con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
     db = con.cursor()
 
-    chapter_name = request.form.get("chapter_name")
+    chapter_index = request.form.get("chapter_index")
     # book title must be a hidden field
     title = request.form.get("book_title")
+    chapter_name = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND chapter_index = ?", (session["user_id"], chapter_index)).fetchone()[0]
     db.execute("UPDATE active SET chapter_name = ? WHERE user_id = ?", (chapter_name, session["user_id"]))
 
     con.commit()
@@ -250,7 +294,7 @@ def export():
         # Export logic based on user input
         ...
     # Load information from db
-    return render_template("export.html", ...)
+    return render_template("export.html")
 
 
 @app.route("/account", methods=["GET", "POST"])

@@ -5,18 +5,18 @@
 {% endblock %}
 
 {% block main %}
-    <div class="form register">
+    <div class="form register font1-s">
         <form action="/register" method="post">
-            <h2>Create your account</h2>
+            <h2 class="font1-link-bold">Create your account</h2>
             <label for="username">Username</label>
-            <input id="username" name="username" placeholder="username" type="text" required>
+            <input class="font1-link" id="username" name="username" placeholder="username" type="text" required>
             <label for="email">Email</label>
-            <input id="email" name="email" placeholder="email" type="email" required>
+            <input class="font1-link" id="email" name="email" placeholder="email" type="email" required>
             <label for="password">Password</label>
-            <input id="password" name="password" placeholder="password" type="password" required>
+            <input class="font1-link" id="password" name="password" placeholder="password" type="password" required>
             <label for="check-password">Confirm your Password</label>
-            <input id="check-password" name="check-password" placeholder="repeat the password" type="password" required>
-            <button type="submit" name="register" id="btn register">Submit it</button>
+            <input class="font1-link" id="check-password" name="check-password" placeholder="repeat the password" type="password" required>
+            <button class="botao discreto" type="submit" name="register" id="btn register">Register</button>
         </form>
     </div>    
 

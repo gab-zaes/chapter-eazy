@@ -1,5 +1,6 @@
 h1, 
-h2, 
+h2,
+h3, 
 p, 
 body,
 html, 
@@ -13,6 +14,26 @@ header {
 button {
     border-style: none;
     box-shadow: none;
+    background-color: inherit;
+    color: inherit;
+    font-size: inherit;
+}
+
+textarea {
+    border: 0px;
+    resize: none;
+    padding: 0px;
+}
+
+br {
+    display: block;
+    width: 100%;
+    height: 10px;
+    background-color: var(--c1);
+}
+
+textarea:focus-visible {
+    outline: none;
 }
 
 img {
@@ -33,6 +54,8 @@ body {
     background-color: var(--c1);
     color: white;
     font-family: sans-serif;
+    overflow-y: auto;
+    overscroll-behavior-y: cover;
 }
 
 main {
@@ -66,10 +89,10 @@ nav {
     align-items: center;
 }
 
-#drop-ul {
-    display: none;
+.drop-ul {
+    display: block;
     position: absolute;
-    width: 150px;
+    width: 250px;
     height: fit-content;
     right: 20px;
     background: var(--c1);
@@ -84,11 +107,11 @@ nav {
     padding: 16px;
 }
 
-#drop-ul li {
-    width: 150px;
+.drop-ul li {
+    width: 100%;
 }
 
-#drop-ul li:first-child {
+.drop-ul li:first-child {
     border-bottom: 1px solid white;
 }
 
@@ -100,8 +123,57 @@ nav {
     color: white;
     height: 50px;
     place-items: center;
+    transition: 0.3s 1s ease-in;
+    overflow: hidden;
+}
+
+.div-flashes.animate {
+    height: 0px;
 }
 
 .hidden {
     display: none;
+}
+
+.flex {
+    display: flex;
+}
+
+.drop-btn {
+    padding: 20px;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+}
+
+.drop-btn svg {
+    position: absolute;
+    display: block;
+    top: 26px;
+    right: 0px;
+    transition: 0.3s;
+}
+
+.drop-btn:hover svg {
+    top: 20px;
+}
+
+nav a {
+
+    position: relative;
+}
+
+nav a::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: white;
+    bottom: -2px;
+    transition: 0.3s;
+}
+
+nav a:hover:after {
+    width: 100%;
 }

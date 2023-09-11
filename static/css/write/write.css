@@ -4,8 +4,144 @@
 }
 
 .windowed {
-    display: none;
-    grid-template-columns: 1fr;
-    place-content: center;
+    display: flex;
     position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.windowed.hidden {
+    display: none;
+}
+
+.chapters {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    border-right: 1px solid white;
+}
+
+.chapters-list {
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+}
+
+.chapters-list ul {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.form.chapter {
+    flex-direction: column;
+    place-self: center;
+    margin: 0px;
+    background-color: var(--c1);
+    padding: 75px;
+}
+
+.chapter label {
+    margin-bottom: 20px;
+}
+
+.chapter input {
+    margin-bottom: 60px;
+}
+
+.area-chapter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.capitulo {
+    display: flex;
+    gap: 10px;
+    place-items: center;
+    max-width: 250px;
+    overflow: hidden;
+}
+
+.chapter-index {
+    height: min-content;
+    min-width: 30px;
+    text-align: center;
+    place-self: left;
+}
+
+.chapter-name {
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+.form.order {
+    margin: 0px;
+    border: 0px;
+}
+
+.form.order:hover {
+    border: 0px;
+}
+
+.small-input {
+    width: 7ch;
+    display: inline-block;
+}
+
+.order div {
+    display: flex;
+    gap: 10px;
+}
+
+.documento-escrita {
+    display: grid;
+    grid-template-columns: 1fr;
+    place-items: center;
+}
+
+.paper {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: visible;
+}
+
+.paper-cont {
+    display: grid;
+    grid-template-columns: 1fr;
+    place-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    background-color: white;
+    margin-bottom: 30px;
+    padding-bottom: 50px;
+}
+
+.documento-escrita h1,
+.documento-escrita h3 {
+    background-color: white;
+    text-align: center;
+}
+
+.documento-escrita h1 {
+    color: black;
+    padding-bottom: 120px;
+}
+
+.documento-escrita h3 {
+    padding-top: 52px;
+    padding-bottom: 20px;
+}
+
+.paper::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 20px;
+    background-color: var(--c1);
 }

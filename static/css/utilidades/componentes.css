@@ -7,17 +7,97 @@
     margin-right: auto;
 }
 
+.form {
+    display: grid;
+    grid-template-columns: 1fr;
+    place-content: center;
+    place-items: center;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 140px;
+    max-width: 450px;
+    padding: 40px 0;
+    border: 4px solid var(--c2);
+    border-radius: 5px;
+    background-color: inherit;
+    transition: 0.3s ease-out;
+}
+
+.form:hover {
+    border: 12px solid var(--c2);
+}
+
 .botao {
     padding: 16px 20px;
-    border-radius: 25px;
+    border-radius: 35px;
+    cursor: pointer;
+}
+
+.botao-menor {
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 .primario {
     color: #232305;
+    background-color: var(--dest-yellow-2);
+}
+
+.primario:hover {
     background-color: var(--dest-yellow-1);
+}
+
+.secundario {
+    color: #200C03;
+    background-color: var(--dest-red);
+}
+
+.terciario {
+    color: #04211E;
+    background-color: var(--dest-blue);
+}
+
+.discreto {
+    color: var(--c11);
+    background-color: var(--c3);
+}
+
+.discreto:hover {
+    background-color: var(--c4);
 }
 
 .outline {
     border: 2px solid var(--dest-blue);
     color: var(--dest-blue);
+}
+
+.outline:hover {
+    background-color: var(--c2);
+}
+
+.capitulo {
+    padding: 18px 22px 18px 22px;
+    margin-bottom: 6px;
+    background-color: var(--c3);
+    color: white;
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    align-items: start;
+    cursor: pointer;
+}
+
+.capitulo.ativo {
+    background-color: var(--dest-blue);
+    color: var(--c3);
+}
+
+.capitulo:hover {
+    background-color: var(--c4);
+}
+
+.capitulo.ativo:hover {
+    background-color: var(--dest-blue);
 }

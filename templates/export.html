@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Export
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
+
+{% block nav %}
+    <ul>
+        <li><a class="font1-link" href="/write">Write</a></li>
+        <li><a class="font1-link" href="/export">Export</a></li>
+    </ul>
+{% endblock %}
+
+{% block main %}
+        <section class="export-bg">
+            <fieldset>
+                <legend class="font1-l">Choose your format:</legend>
+                <form class="export-form" action="/export" method="post">
+                    <div>
+                        <div>
+                            <input type="radio" name="format" id="md" value="md" check>
+                            <label class="font1-s" for="md">Markdown</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="format" id="pdf" value="pdf" check>
+                            <label class="font1-s" for="md">PDF</label>
+                        </div>
+                    </div>                   
+                    <button type="submit" class="botao primario font1-button">download</button>
+                </form>
+            </fieldset>
+        </section>
+{% endblock %}

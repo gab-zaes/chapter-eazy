@@ -1,0 +1,40 @@
+.font2-xxl {
+    font: 400 4rem/1 "Playfair Display", serif;
+}
+
+.font2-l {
+    font: 400 2.5rem/1 "Playfair Display", serif;  
+}
+
+.font2-index {
+    font: 400 1.5rem/1 "Playfair Display", serif;
+}
+
+.font1-l {
+    font: 500 1.5rem/1.5 "Work Sans", sans-serif;  
+}
+
+.font1-link {
+    font: 400 1.25rem/1 "Work Sans", sans-serif;
+}
+
+.font1-link-bold {
+    font: 700 1.25rem/1 "Work Sans", sans-serif;
+}
+
+.font1-button {
+    font: 400 1.125rem/1 "Work Sans", sans-serif;
+    text-transform: uppercase;
+}
+
+.font1-s {
+    font: 400 1rem/1 "Work Sans", sans-serif;
+}
+
+.font1-xs {
+    font: 400 0.75rem/1 "Work Sans", sans-serif;
+}
+
+.font3-body {
+    font: 400 1.25rem/1.375 "PT Serif", sans-serif;
+}
