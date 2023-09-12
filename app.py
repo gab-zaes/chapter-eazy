@@ -1,11 +1,11 @@
 import sys
 import re
 import sqlite3
-# import random
-from flask import Flask, flash, render_template, request, redirect, session
+import random
+from flask import Flask, flash, render_template, request, redirect, session, send_file
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, romans
+from helpers import apology, login_required, romans, erase
 
 
 # Configure application 
@@ -203,7 +203,7 @@ def save():
 
     con.commit()
     con.close()
-    flash("Saved!", "save")
+    flash(random.choice(["Saved!", "One Save to Rule then All", "Progress Saved", "Keep Saving", "Checkpoint", "Coffee Time!"]), "save")
     return redirect("/write")
 
 
@@ -289,12 +289,42 @@ def set_chapter():
 @app.route("/export", methods=["GET", "POST"])
 @login_required
 def export():
-    """Gives options to export"""
+    """Downloads the current book in md or pdf"""
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    # current title for printing
+    current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
     if request.method == "POST":
-        # Export logic based on user input
-        ...
+        chapters = db.execute(
+            "SELECT chapter_name, chapter_body FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", 
+            (session["user_id"], current_title))
+
+        if request.form.get("format") == "md":
+            # open current_title.md file in temporary folder
+            filename = "./temp/" + current_title + ".md"
+            with open(filename, "w") as file:
+                # write to the file iterating over chapters
+                for chapter, body in chapters:
+                    print(chapter, body)
+                    file.write("#" + chapter + "\n\n")
+                    try:
+                        file.writelines(body + "\n\n")
+                    except TypeError:
+                        file.write("\n")
+            # handle a response signaling this file must be downloaded
+            
+            # erase temp file
+            
+            return send_file(filename), erase(filename) 
+        elif request.form.get("format") == "pdf":
+            # call finalformat classes and functions
+            ...
     # Load information from db
-    return render_template("export.html")
+
+    con.commit()
+    con.close()
+    return render_template("export.html", current_title=current_title)
 
 
 @app.route("/account", methods=["GET", "POST"])

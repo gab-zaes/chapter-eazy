@@ -9,22 +9,71 @@
         function reqListener() {
             console.log(this.responseText);
             }
+
+        function slice_text(text) {
+            let array = [];
+            n = (text.length / 2000);
+                for (let i = 0; i < n; i++) {
+                    let start = 2000 * i;
+                    let end = 2000 * (i + 1);
+                    let slice = text.slice(start, end);
+                    array.push(slice);
+                    // append slice to array
+                }
+                console.log(array);
+            return array
+        }
+
+        function new_textarea(slice) {
+            let container = document.createElement("div")
+            let textarea = document.createElement("textarea");
+            let node = document.createTextNode(slice);
+            textarea.appendChild(node);
+            textarea.classList.add("paper");
+            textarea.classList.add("font3-body");
+            container.classList.add("paper-cont");
+            textarea.maxLength = 2000;
+            document.getElementById("pai-paper-cont").appendChild(container);
+            document.querySelector(".paper-cont:last-child").appendChild(textarea);
+            textarea.autofocus = true;
+
+            return textarea.autofocus
+        }
+
         document.addEventListener("DOMContentLoaded", function(){
-            document.getElementById("save-submit-value").value = document.querySelector(".paper").value;
-            // let chapter_body = document.querySelector("#chapter_body").innerHTML
+            let sent_text = document.querySelector(".vessel").textContent;
+            document.getElementById("save-submit-value").value = sent_text;
+            for (let string of slice_text(sent_text)) {
+                new_textarea(string);
+            }
+            // document.getElementById("length").innerHTML = document.querySelector(".paper").value.length;
+
             document.querySelector(".area-chapter").addEventListener("click", function(){
                 document.querySelector(".windowed").classList.toggle("hidden");
             });
             let chapters = document.querySelectorAll(".chapter-name")
             for (let chapter of chapters) {
-                if (chapter.innerHTML === document.querySelector("#chapter_title_h1").innerHTML) {
+                if (chapter.innerHTML === document.getElementById("chapter_title_h1").innerHTML) {
                     chapter.parentNode.classList.add("ativo");
                 };
             };
-            let page = document.querySelector(".paper");
-            page.addEventListener("keyup", function(){
-                document.getElementById("save-submit-value").value = page.value;
-            });
+            let pages = document.querySelectorAll(".paper");
+            let text = "";
+            document.onkeyup = () => {
+                for (let page of pages) {
+                    // concatenate all strings in all textareas before saving
+                    text += page.value;
+                }
+                document.getElementById("save-submit-value").value = text;
+                document.getElementById("length").innerHTML = text.length;
+                }
+            document.onkeydown = () => {
+                let last = document.querySelector(".paper:last-child")
+                if (last.value.length > 1999) {
+                    new_textarea(" ");
+                    document.querySelector(".paper-cont:last-child.paper").selectionStart;
+                }        
+            }
         });
     </script>
     <script src="/static/keyboard.js"></script>
@@ -48,7 +97,7 @@
 
 {% block main %}
     {% if chapter_count %}
-        <span id="chapter_body" class="hidden">{{ chapter_body }}</span>
+        <span id="chapter_body" class="vessel hidden">{{ chapter_body }}</span>
         <div class="windowed hidden">
             <form class="form chapter" action="/new_chapter" method="post">
                 <input class="font1-link" name="book_title" type="hidden" value="{{ current_title }}">
@@ -97,14 +146,14 @@
                     </svg>
                     <span class="font1-s">New Chapter</span>
                 </div>
+                <div>
+                    <span class="font1-xs">characters: <span id="length">0</span></span>
+                </div>
                 <div class="documento-escrita">
-                    <form action="/save" method="post">
+                    <div id="pai-paper-cont">
                         <h3 class="font2-index faded-gray">{{ current_index | romans }}</h3>
                         <h1 class="font2-l" id="chapter_title_h1">{{ current_chapter }}</h1>
-                        <div class="paper-cont">
-                            <textarea class="paper font3-body" name="chapter_body" rows="30" autofocus autocomplete="off">{{ chapter_body }}</textarea>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
