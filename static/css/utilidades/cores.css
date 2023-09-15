@@ -16,6 +16,14 @@
     --dest-blue: #C9FFFA;
 }
 
+.c5 {
+    color: var(--c5);
+}
+
+.c10 {
+    color: var(--c10);
+}
+
 .faded-gray {
     color: #A6A6A6;
 }

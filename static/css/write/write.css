@@ -1,6 +1,37 @@
+#save-form div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+}
+
+#save-form div > span {
+    position: absolute;
+    bottom: -24px;
+}
+
+.documento-header div:last-child {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+#scroll {
+    padding: 8px;
+}
+
 .grid-write {
     display: grid;
     grid-template-columns: 1fr 5fr;
+}
+
+.documento-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1500px;
 }
 
 .windowed {
@@ -18,7 +49,7 @@
 .chapters {
     display: flex;
     flex-direction: column;
-    gap: 100px;
+    gap: 10px;
     border-right: 1px solid white;
 }
 
@@ -78,6 +109,16 @@
     white-space: nowrap;
 }
 
+.order-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.order {
+    width: 90%;
+}
+
 .form.order {
     margin: 0px;
     border: 0px;
@@ -97,6 +138,10 @@
     gap: 10px;
 }
 
+.order.hidden {
+    display: none;
+}
+
 .documento-escrita {
     display: grid;
     grid-template-columns: 1fr;
@@ -107,19 +152,20 @@
     width: 800px;
     margin-left: auto;
     margin-right: auto;
-    overflow-y: visible;
+    overflow-y: hidden;
 }
 
 .paper-cont {
     display: grid;
     grid-template-columns: 1fr;
-    place-items: center;
+    justify-items: center;
     margin-left: auto;
     margin-right: auto;
     width: 1000px;
     background-color: white;
     margin-bottom: 30px;
-    padding-bottom: 50px;
+    padding-bottom: 160px;
+    min-height: 800px;
 }
 
 .documento-escrita h1,
@@ -130,7 +176,7 @@
 
 .documento-escrita h1 {
     color: black;
-    padding-bottom: 120px;
+    padding-bottom: 60px;
 }
 
 .documento-escrita h3 {

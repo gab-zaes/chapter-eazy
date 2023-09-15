@@ -5,28 +5,7 @@
 {% endblock %}
 
 {% block script %}
-    <script>
-        function reqListener() {
-            console.log(this.responseText);
-            }
-        document.addEventListener("DOMContentLoaded", function(){
-            document.getElementById("save-submit-value").value = document.querySelector(".paper").value;
-            // let chapter_body = document.querySelector("#chapter_body").innerHTML
-            document.querySelector(".area-chapter").addEventListener("click", function(){
-                document.querySelector(".windowed").classList.toggle("hidden");
-            });
-            let chapters = document.querySelectorAll(".chapter-name")
-            for (let chapter of chapters) {
-                if (chapter.innerHTML === document.querySelector("#chapter_title_h1").innerHTML) {
-                    chapter.parentNode.classList.add("ativo");
-                };
-            };
-            let page = document.querySelector(".paper");
-            page.addEventListener("keyup", function(){
-                document.getElementById("save-submit-value").value = page.value;
-            });
-        });
-    </script>
+    <script src="/static/write.js"></script>
     <script src="/static/keyboard.js"></script>
 {% endblock %}
 
@@ -39,9 +18,11 @@
                 <input name="chapter_name" type="hidden" value="{{ current_chapter }}">
                 <input name="book_title" type="hidden" value="{{ current_title }}">
                 <input name="chapter_body" id="save-submit-value" type="hidden" value="">
-                <button class="botao primario font1-button" type="submit" id="save">Save Changes</button>
+                <div>
+                    <button class="botao primario font1-button" type="submit" id="save">Save Changes</button>
+                    <span class="font1-xs c5">or press <span class="font1-xs c10">CTRL + S</span></span>
+                </div>
             </form>
-            
         </li>
     </ul>
 {% endblock %}
@@ -53,7 +34,7 @@
             <form class="form chapter" action="/new_chapter" method="post">
                 <input class="font1-link" name="book_title" type="hidden" value="{{ current_title }}">
                 <label class="font1-link-bold">Chapter Title</label>
-                <input class="font1-link" name="chapter_name" type="text" required>
+                <input class="font1-link" name="chapter_name" type="text" autocomplete="off" autofocus required>
                 <button class="botao discreto font1-button" type="submit">Create Chapter</button>
             </form>
         </div>
@@ -77,7 +58,8 @@
                 </div>
                 {% if chapter_count %}
                 <div class="order-cont">
-                    <form class="form order" action="/change_order" method="post">
+                    <button id="show-order" class="botao font1-s">Change Chapter Order</button>
+                    <form class="form order hidden" action="/change_order" method="post">
                         <div>
                             <input class="small-input font1-s" type="text" name="old_index" placeholder="Index" required>
                             <input class="small-input font1-s" type="text" name="new_index" placeholder="New index" required>
@@ -89,22 +71,30 @@
                 {% endif %}
             </div>
             <div class="documento">
-                <div class="area-chapter">
-                    <svg id="icon_new_chapter" width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="17.5" cy="17.5" r="17.5" fill="#FFC0A3"/>
-                        <path d="M17.5 11.6667V24.6296" stroke="#140D1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M23.9815 18.1481L11.0185 18.1481" stroke="#140D1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span class="font1-s">New Chapter</span>
+                <div class="documento-header">
+                    <div class="area-chapter">
+                        <div>
+                            <svg id="icon_new_chapter" width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="17.5" cy="17.5" r="17.5" fill="#FFC0A3"/>
+                                <path d="M17.5 11.6667V24.6296" stroke="#140D1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M23.9815 18.1481L11.0185 18.1481" stroke="#140D1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="font1-s">New Chapter</span>
+                    </div>
+                    <div>
+                        <button id="scroll" class="botao font1-button">SCROLL DOWN</button>
+                        <span class="font1-xs c5">or press <span class="font1-xs c10">CTRL + D</span></span>
+                    </div>
                 </div>
                 <div class="documento-escrita">
-                    <form action="/save" method="post">
+                    <section>
                         <h3 class="font2-index faded-gray">{{ current_index | romans }}</h3>
                         <h1 class="font2-l" id="chapter_title_h1">{{ current_chapter }}</h1>
                         <div class="paper-cont">
-                            <textarea class="paper font3-body" name="chapter_body" rows="30" autofocus autocomplete="off">{{ chapter_body }}</textarea>
+                            <textarea class="paper font3-body" name="chapter_body" rows="1" autofocus autocomplete="off">{{ chapter_body }}</textarea>
                         </div>
-                    </form>
+                    </section>
                 </div>
             </div>
         </div>

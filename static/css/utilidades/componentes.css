@@ -25,7 +25,7 @@
 }
 
 .form:hover {
-    border: 12px solid var(--c2);
+    background-color: var(--c2);
 }
 
 .botao {

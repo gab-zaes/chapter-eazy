@@ -23,3 +23,11 @@ def romans(n: int):
 
 def apology(message, code=400):
     return render_template("apology.html", code=code, message=message), code
+
+
+def erase(path):
+    """Erases the content of path"""
+    try:
+        return os.remove(path)
+    except (OSError, FileNotFoundError):
+        return False

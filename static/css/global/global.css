@@ -11,6 +11,10 @@ header {
     margin: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 button {
     border-style: none;
     box-shadow: none;
@@ -92,6 +96,7 @@ nav {
 .drop-ul {
     display: block;
     position: absolute;
+    z-index: 99;
     width: 250px;
     height: fit-content;
     right: 20px;
@@ -159,7 +164,6 @@ nav {
 }
 
 nav a {
-
     position: relative;
 }
 
