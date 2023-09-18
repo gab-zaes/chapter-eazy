@@ -101,3 +101,14 @@
 .capitulo.ativo:hover {
     background-color: var(--dest-blue);
 }
+
+@media (max-width: 800px) {
+    .botao {
+        padding: 14px 16px;
+        border-radius: 35px;
+    }
+
+    nav ul {
+        display: none;
+    }
+}

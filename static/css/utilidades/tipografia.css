@@ -38,3 +38,40 @@
 .font3-body {
     font: 400 1.25rem/1.375 "PT Serif", sans-serif;
 }
+
+@media (max-width: 800px) {
+    .font2-index {
+        font-size: 1rem;
+    }
+    .font2-xxl {
+        font-size: 3rem;
+    }
+    
+    .font2-l {
+        font-size: 1.75rem;
+    }
+
+    .font1-link {
+        font-size: 1rem;
+    }
+
+    .font1-button {
+        font-size: 0.8rem;
+    }
+
+    .font1-s {
+        font-size: 0.8rem;
+    }
+
+    .font1-xs {
+        font-size: 0.6rem;
+    }
+
+    .font1-l {
+        font-size: 1.2rem;
+    }
+
+    .font3-body {
+        font-size: 1rem;
+    }
+}

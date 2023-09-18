@@ -2,7 +2,8 @@ import sys
 import re
 import sqlite3
 import random
-from flask import Flask, flash, render_template, request, redirect, session, send_file
+import os
+from flask import Flask, flash, render_template, request, redirect, session, send_file, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, romans, erase
@@ -291,6 +292,8 @@ def export():
     con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
     db = con.cursor()
 
+    username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+
     # current title for printing
     current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
     if request.method == "POST":
@@ -300,21 +303,19 @@ def export():
 
         if request.form.get("format") == "md":
             # open current_title.md file in temporary folder
-            filename = "./temp/" + current_title + ".md"
+            filename = "./temp/" + username + current_title + ".md"
             with open(filename, "w") as file:
                 # write to the file iterating over chapters
                 for chapter, body in chapters:
                     print(chapter, body)
-                    file.write("#" + chapter + "\n\n")
+                    file.write("# " + chapter + "\n\n")
                     try:
                         file.writelines(body + "\n\n")
                     except TypeError:
                         file.write("\n")
-            # handle a response signaling this file must be downloaded
             
-            # erase temp file
-            
-            return send_file(filename), erase(filename) 
+            flash("File created", "save")
+            return redirect("/download")
         elif request.form.get("format") == "pdf":
             # call finalformat classes and functions
             ...
@@ -322,7 +323,35 @@ def export():
 
     con.commit()
     con.close()
-    return render_template("export.html", current_title=current_title)
+    return render_template("export.html", current_title=current_title, username=username)
+
+
+@app.route("/download", methods=["GET"])
+@login_required
+def download():
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    filename = ""
+    path = ""
+    current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+
+    files = os.listdir("./temp")
+    for f in files:
+        print(f)
+        if f == f"{username}{current_title}.md" or f == f"{username}{current_title}.pdf":
+            filename = f.replace(username, "")
+            path = url_for('static', filename='style.css')
+            # path = "temp/" + username + filename
+            # path = os.path.join(app.root_path.replace(" ", "%20"), path)
+            break
+
+    con.commit()
+    con.close()
+
+    return render_template("download.html", username=username, filename=filename, path=path)
+    
 
 
 @app.route("/account", methods=["GET", "POST"])

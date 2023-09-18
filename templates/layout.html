@@ -26,6 +26,8 @@
         {% block script %}{% endblock %}
     </head>
     <body>
+        {% block body %}
+        {% endblock %}
         <header class="header-bg">
             <div class="header container">
                 <nav>
@@ -45,6 +47,8 @@
                     </button>
                     <ul class="drop-ul hidden">
                         <li><a class="font1-link" href="/account">Account</a></li>
+                        <li class="responsivo"><a class="font1-link" href="/write">Write</a></li>
+                        <li class="responsivo"><a class="font1-link" href="/Export">Export</a></li>
                         <li><a class="font1-link" href="/logout">Log Out</a></li>
                     </ul>
                 </div>

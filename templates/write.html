@@ -7,6 +7,11 @@
 {% block script %}
     <script src="/static/write.js"></script>
     <script src="/static/keyboard.js"></script>
+    <script src="/static/responsivo.js"></script>
+{% endblock %}
+
+{% block body %}
+    <button class="botao primario font1-button responsivo" type="submit" id="save-body">Save Changes</button>
 {% endblock %}
 
 {% block nav %}
@@ -34,7 +39,7 @@
             <form class="form chapter" action="/new_chapter" method="post">
                 <input class="font1-link" name="book_title" type="hidden" value="{{ current_title }}">
                 <label class="font1-link-bold">Chapter Title</label>
-                <input class="font1-link" name="chapter_name" type="text" autocomplete="off" autofocus required>
+                <input class="font1-link" name="chapter_name" type="text" autocomplete="off" required>
                 <button class="botao discreto font1-button" type="submit">Create Chapter</button>
             </form>
         </div>
@@ -82,7 +87,7 @@
                         </div>
                         <span class="font1-s">New Chapter</span>
                     </div>
-                    <div>
+                    <div class="scroll-down-area">
                         <button id="scroll" class="botao font1-button">SCROLL DOWN</button>
                         <span class="font1-xs c5">or press <span class="font1-xs c10">CTRL + D</span></span>
                     </div>
@@ -92,7 +97,7 @@
                         <h3 class="font2-index faded-gray">{{ current_index | romans }}</h3>
                         <h1 class="font2-l" id="chapter_title_h1">{{ current_chapter }}</h1>
                         <div class="paper-cont">
-                            <textarea class="paper font3-body" name="chapter_body" rows="1" autofocus autocomplete="off">{{ chapter_body }}</textarea>
+                            <textarea class="paper font3-body" name="chapter_body" rows="1" autocomplete="off">{{ chapter_body }}</textarea>
                         </div>
                     </section>
                 </div>
@@ -111,4 +116,5 @@
             </form>
         </div>
     {% endif %}
+    <footer class="responsivo"><button class="botao font1-button" id="scroll-up">Scroll Up</button></footer>
 {% endblock %}

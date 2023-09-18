@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Export
+{% endblock %}
+
+{% block script %}
+    <script src="/static/download.js"></script>
+{% endblock %}
+
+{% block nav %}
+    <ul>
+        <li><a class="font1-link" href="/write">Write</a></li>
+        <li><a class="font1-link" href="/export">Export</a></li>
+    </ul>
+{% endblock %}
+
+{% block main %}
+        <section class="download">
+            <h1 class="font2-l">Your download should be starting...</h1>
+            <p class="font1-l">Thanks for using Chaptereazy!</p>
+            <span id="filename" class="hidden">{{ filename }}</span>
+            <span id="path" class="hidden">{{ path }}</span>
+        </section>
+{% endblock %}

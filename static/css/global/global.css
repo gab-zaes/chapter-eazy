@@ -70,6 +70,10 @@ form input {
     display: block;
 }
 
+.responsivo {
+    display: none;
+}
+
 .header-bg {
     background-color: var(--c1);
     border-bottom: 1px solid white;
@@ -116,8 +120,12 @@ nav {
     width: 100%;
 }
 
-.drop-ul li:first-child {
+.drop-ul li {
     border-bottom: 1px solid white;
+}
+
+.drop-ul li:last-child {
+    border-bottom: 0px;
 }
 
 .div-flashes {
@@ -180,4 +188,30 @@ nav a::after {
 
 nav a:hover:after {
     width: 100%;
+}
+
+@media (max-width: 800px) {
+    .header {
+        flex-direction: column;
+        gap: 20px;
+        padding-top: 40px;
+        padding-bottom: 20px;
+    }
+
+    .drop-btn {
+        padding: 16px 32px;
+        border-radius: 5px;
+        border: 2px solid var(--c4);
+    }
+
+    .drop-btn svg {
+        display: none;
+    }
+
+    .drop-ul {
+        width: 150px;
+        top: 95%;
+        right: 50%;
+        transform: translateX(27%);
+    }
 }
