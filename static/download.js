@@ -1,11 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
-    let anchor = document.createElement("a");
-    anchor.href = document.getElementById("path").innerText;
-    anchor.download = document.getElementById("filename").innerText;
+    let meta = this.getElementById("meta")
+    document.getElementById("pdf").addEventListener("click", () => {
+        meta.classList.remove("hidden");
+    });
 
-    console.log(anchor.href);
+    document.getElementById("md").addEventListener("click", () => {
+        meta.classList.add("hidden");
+    });
 
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    document.getElementById("download").addEventListener("click", () => {
+        let anchor = document.getElementById("download");
+        anchor.download = document.getElementById("filename").innerText;
+
+        console.log(anchor.href);
+
+        anchor.click();
+    })
+    // document.querySelector("main").removeChild(anchor);
 });

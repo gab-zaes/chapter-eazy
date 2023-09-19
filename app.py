@@ -3,11 +3,15 @@ import re
 import sqlite3
 import random
 import os
-from flask import Flask, flash, render_template, request, redirect, session, send_file, url_for
+from datetime import datetime
+from flask import Flask, flash, render_template, request, redirect, session, send_file, url_for, send_from_directory
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, romans, erase
+from finalformat import Chapter, Book, consolidate_pdf
 
+REGULAR_SIZE = (125, 180)
+date_time = datetime.now()
 
 # Configure application 
 app = Flask(__name__)
@@ -15,7 +19,10 @@ app = Flask(__name__)
 # Configure filter for roman algorisms
 app.jinja_env.filters["romans"] = romans
 
+UPLOAD_FOLDER = "./download/"
+
 # use filesystem instead of cookies
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
@@ -293,6 +300,7 @@ def export():
     db = con.cursor()
 
     username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    email = db.execute("SELECT email FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
 
     # current title for printing
     current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
@@ -303,8 +311,10 @@ def export():
 
         if request.form.get("format") == "md":
             # open current_title.md file in temporary folder
-            filename = "./temp/" + username + current_title + ".md"
-            with open(filename, "w") as file:
+            filename = username + current_title + ".md"
+
+            path = app.config["UPLOAD_FOLDER"] + filename
+            with open(path, "w") as file:
                 # write to the file iterating over chapters
                 for chapter, body in chapters:
                     print(chapter, body)
@@ -314,43 +324,72 @@ def export():
                     except TypeError:
                         file.write("\n")
             
-            flash("File created", "save")
-            return redirect("/download")
+            return download(request.form.get("format"))
+
         elif request.form.get("format") == "pdf":
             # call finalformat classes and functions
-            ...
-    # Load information from db
+            filename = username + current_title + ".pdf"
+            path = app.config["UPLOAD_FOLDER"] + filename
+            index = []
+            for chapter, body in chapters:
+                index.append(Chapter(chapter, body))
+
+            meta = {
+                "title": current_title,
+                "author": request.form.get("author"),
+                "date": f"{date_time.day}/{date_time.month}/{date_time.year}",
+                "contact": email,
+                "license": f"All rights regarding the text presented here are reserved to {request.form.get('author')}",
+                "quote": request.form.get("quote"),
+                "bio": request.form.get("bio")
+            }
+
+            # create book instance
+            book = Book(index, "0", "0", REGULAR_SIZE, **meta)
+
+            if consolidate_pdf(book, path, "L"):
+                return download(request.form.get("format"))
 
     con.commit()
     con.close()
     return render_template("export.html", current_title=current_title, username=username)
 
 
-@app.route("/download", methods=["GET"])
+@app.route("/download/", methods=["GET"])
 @login_required
-def download():
+def download(format):
     con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
     db = con.cursor()
 
-    filename = ""
-    path = ""
     current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
     username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
-
-    files = os.listdir("./temp")
-    for f in files:
-        print(f)
-        if f == f"{username}{current_title}.md" or f == f"{username}{current_title}.pdf":
-            filename = f.replace(username, "")
-            path = url_for('static', filename='style.css')
-            # path = "temp/" + username + filename
-            # path = os.path.join(app.root_path.replace(" ", "%20"), path)
-            break
 
     con.commit()
     con.close()
 
-    return render_template("download.html", username=username, filename=filename, path=path)
+    match format:
+        case "md":
+            files = os.listdir("./download")
+            for f in files:
+                if f == f"{username}{current_title}.md":
+                    filename = f.replace(username, "")
+                    path = os.path.join(app.root_path, (app.config["UPLOAD_FOLDER"] + f).replace("./", ""))
+                    # path = "temp/" + username + filename
+                    # path = os.path.join(app.root_path.replace(" ", "%20"), path)
+                    break
+
+        case "pdf":
+            files = os.listdir("./download")
+            for f in files:
+                if f == f"{username}{current_title}.pdf":
+                    filename = f.replace(username, "")
+                    path = os.path.join(app.root_path, (app.config["UPLOAD_FOLDER"] + f).replace("./", ""))
+                    # path = "temp/" + username + filename
+                    # path = os.path.join(app.root_path.replace(" ", "%20"), path)
+                    break
+            
+
+    return send_file(path, as_attachment=True, download_name=filename), erase(path)
     
 
 

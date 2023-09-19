@@ -7,32 +7,79 @@
 
 .export-bg fieldset{
     background-color: var(--c2);
-    height: 400px;
-    width: 400px;
+    min-height: 400px;
+    min-width: 400px;
     margin-left: auto;
     margin-right: auto;
     display: flex;
     place-content: center;
+    flex-direction: column;
 }
 
 .export-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
+    padding-top: calc(120px - 20%);
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: 40px;
+    row-gap: 10px;
+    place-items: center;
     place-content: center;
-    padding: 20px;
-    flex-direction: column;
+    text-align: center;
+}
+
+.export-form button {
+    grid-row: 3;
+    grid-column: 1/-1;
 }
 
 .export-form div {
     display: flex;
-    column-gap: 40px;
     row-gap: 10px;
-    place-items: center;
-}
-
-.export-form div div {
-    display: flex;
     flex-direction: column;
     place-self: center;
+}
+
+#meta.hidden {
+    display: none;
+}
+
+#meta {
+    background-color: var(--c3);
+    padding: 40px;
+}
+
+#meta input,
+#meta textarea {
+    width: 500px;
+}
+
+#meta textarea {
+    border-radius: 5px;
+    padding: 4px;
+}
+
+#bio {
+    height: 100px;
+}
+
+@media (max-width: 800px) {
+    .export-bg fieldset{
+        width: 100%;
+        margin: 0px;
+        min-width: auto;
+        border: 0;
+        padding: 0;
+    }
+    #meta input,
+    #meta textarea {
+    width: 100%;
+    }
+    .export-bg {
+        width: 100%;
+        display: block;
+        left: 50%;
+        top: 70%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+    }
 }

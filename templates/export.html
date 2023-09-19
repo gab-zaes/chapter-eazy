@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block script %}
+    <script src="/static/download.js"></script>
 {% endblock %}
 
 {% block nav %}
@@ -20,17 +21,23 @@
                 <legend class="font1-l">Choose your format:</legend>
                 <form class="export-form" action="/export" method="post">
                     <div>
-                        <div>
-                            <input type="radio" name="format" id="md" value="md" check>
-                            <label class="font1-s" for="md">Markdown</label>
-                        </div>
-                        <div>
-                            <input type="radio" name="format" id="pdf" value="pdf" check>
-                            <label class="font1-s" for="md">PDF</label>
-                        </div>
-                    </div>                   
+                        <input type="radio" name="format" id="md" value="md" check>
+                        <label class="font1-s" for="md">Markdown</label>
+                        <input type="radio" name="format" id="pdf" value="pdf">
+                        <label class="font1-s" for="md">PDF</label>
+                    </div>
+                    <div id="meta" class="hidden font1-link">
+                        <label for="author">Author's Name:</label>
+                        <input class="font1-link" type="text" name="author" id="author" autocomplete="off">
+                        <label for="author">Quote (optional):</label>
+                        <input class="font1-link" type="text" name="quote" id="quote" autocomplete="off">
+                        <label for="author">Bio (tell more about yourself):</label>
+                        <textarea class="font1-link" rows="5" type="text" name="bio" id="bio" autocomplete="off"></textarea>
+                        <span class="font1-xs">PDF rendering is powered by finalformat.</span>
+                    </div>
                     <button type="submit" class="botao primario font1-button" download>download</button>
                 </form>
             </fieldset>
         </section>
+        <a id="download" class="hidden" href="{{ url_for('download') }}">File</a>
 {% endblock %}
