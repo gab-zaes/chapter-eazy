@@ -1,0 +1,43 @@
+.account {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+    place-items: center;
+    padding: 20px;
+}
+
+.account h1 {
+    margin-bottom: 30px;
+}
+
+.account label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.account input {
+    margin-bottom: 10px;
+}
+
+.delete input,
+.change-pass input[name="new-password"] {
+    margin-bottom: 30px;
+}
+
+.account:first-child form {
+    margin-bottom: 40px;
+}
+
+.account form {
+    padding: 30px 20px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.account form:hover {
+    background-color: var(--c2);
+}
+
+.account h2 {
+    margin-bottom: 20px;
+}

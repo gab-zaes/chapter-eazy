@@ -17,8 +17,8 @@
                     });
                 }
 
-                if (document.getElementById("div-flashes")) {
-                    div = document.getElementById("div-flashes");
+                if (document.querySelector(".div-flashes")) {
+                    div = document.querySelector(".div-flashes");
                     div.classList.add("animate");
                 }
                 });
@@ -65,6 +65,18 @@
         {% with messages = get_flashed_messages(category_filter=["save"]) %}
             {% if messages %}
                 <div id="div-flashes" class="div-flashes">
+                    <ul class="flashes">
+                        {% for message in messages %}
+                            <li class="font1-s">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+            {% if messages %}
+                <div id="warning-flash" class="div-flashes">
                     <ul class="flashes">
                         {% for message in messages %}
                             <li class="font1-s">{{ message }}</li>

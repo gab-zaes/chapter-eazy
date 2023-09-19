@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Account | Chapter-eazy
+{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block nav %}
+    <ul>
+        <li><a class="font1-link" href="/write">Write</a></li>
+        <li><a class="font1-link" href="/export">Export</a></li>
+    </ul>
+{% endblock %}
+
+{% block main %}
+        <section class="account">
+            <h1 class="font2-l">Manage your account</h1>
+            <form class="change-pass font1-link" action="/account" method="post">
+                <h2 class="font1-l">Change your Password:</h2>
+                <label for="password">Current Password</label>
+                <input class="font1-link" type="password" name="password" id="password" placeholder="password">
+                <label for="new-password">New Password</label>
+                <input class="font1-link" type="password" name="new-password" id="new-password" placeholder="new_password">
+                <button class="botao terciario font1-button" type="submit">Change Password</button>
+            </form>
+            <form class="delete font1-link" action="/delete" method="post">
+                <label for="delete">Delete a chapter:</label>
+                <input class="font1-link" type="text" name="delete" id="delete" placeholder="Chapter Number" autocomplete="off">
+                <button type="submit" class="botao secundario font1-button">Delete Chapter</button>
+            </form>
+        </section>
+{% endblock %}

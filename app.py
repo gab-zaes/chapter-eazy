@@ -80,6 +80,7 @@ def register():
             
             # call login 
             login()
+            flash("Account Created!", "save")
             return redirect("/write")
         return apology("Error! Invalid input")
     return render_template("register.html")
@@ -111,7 +112,8 @@ def login():
         
         # If password dont match or there is no username, than return apology
         if len(rows) != 1 or not check_password_hash(rows[0][1], request.form.get("password")):
-            return apology("invalid username and/or password", 403)
+            flash("Invalid username and/or password", "warning")
+            return redirect("/login")
 
         # Start user session
         session["user_id"] = rows[0][0]
@@ -129,12 +131,6 @@ def logout():
     # First we call save
     save()
 
-    # con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
-    # db = con.cursor()
-
-
-    # con.commit()
-    # con.close()
     # Forget any user_id
     session.clear()
 
@@ -160,10 +156,8 @@ def write():
         current_chapter = ""
         current_index = 1
     print(current_title, current_chapter)
-        
 
     # then render the page
-
     rows = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
     chapters = [row[0] for row in rows]
     if chapters is None:
@@ -234,8 +228,8 @@ def new_chapter():
     db.execute("REPLACE INTO active(user_id, title, chapter_name) VALUES(?, ?, ?)", (session["user_id"], request.form.get("book_title"), request.form.get("chapter_name"),))
     con.commit()
     con.close()
-    flash("Chapter created!", "save")
-    
+
+    flash("Chapter created!", "save") 
     return redirect("/write")
 
 
@@ -253,14 +247,17 @@ def change_order():
         new = int(request.form.get("new_index"))
         current_title = request.form.get("current_title")
     except ValueError:
+        con.close()
         flash("invalid input", "warning")
-        return write
+        return redirect("/write")
 
     rows = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
     chapters = [row[0] for row in rows]
 
     if new > len(chapters) or old > len(chapters) or new < 1 or old < 1:
-        return write()
+        con.close()
+        flash("Input out of range", "warning")
+        return redirect("/write")
     else:
         tmp = chapters.pop(old - 1)
         chapters.insert(new - 1, tmp)
@@ -270,6 +267,8 @@ def change_order():
 
     con.commit()
     con.close()
+
+    flash("Order changed!", "save")
     return redirect("/write")
 
 
@@ -323,7 +322,8 @@ def export():
                         file.writelines(body + "\n\n")
                     except TypeError:
                         file.write("\n")
-            
+
+            con.close()
             return download(request.form.get("format"))
 
         elif request.form.get("format") == "pdf":
@@ -348,9 +348,9 @@ def export():
             book = Book(index, "0", "0", REGULAR_SIZE, **meta)
 
             if consolidate_pdf(book, path, "L"):
+                con.close()
                 return download(request.form.get("format"))
 
-    con.commit()
     con.close()
     return render_template("export.html", current_title=current_title, username=username)
 
@@ -392,15 +392,44 @@ def download(format):
     return send_file(path, as_attachment=True, download_name=filename), erase(path)
     
 
-
 @app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
     """Manages account and password"""
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    password_hash = db.execute("SELECT hash FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+
     if request.method == "POST":
         # Check password change
-        ...
-    return render_template("account.html")
+        if request.form.get("new-password") == request.form.get("password"):
+            con.close()
+            flash("Same password than before!", "warning")
+            return redirect("/account")
+        elif not request.form.get("new-password"):
+            con.close()
+            flash("Invalid entry", "warning")
+            return redirect("/account")
+        elif not check_password_hash(password_hash, request.form.get("password")):
+            con.close()
+            flash("Wrong password", "warning")
+            return redirect("/account")
+        else:
+            db.execute("UPDATE users SET hash = ? WHERE user_id = ?", 
+            (generate_password_hash(request.form.get("new-password")), session["user_id"]))
+
+            flash("Password changed!", "save")
+
+            con.commit()
+            con.close()
+            return redirect(url_for("write"))
+
+    con.commit()
+    con.close()
+        
+    return render_template("account.html", username=username)
 
 
 @app.route("/delete", methods=["POST"])

@@ -140,6 +140,10 @@ nav {
     overflow: hidden;
 }
 
+#warning-flash {
+    background-color: red;
+}
+
 .div-flashes.animate {
     height: 0px;
 }
