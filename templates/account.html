@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block script %}
+<script src="../static/account.js"></script>
 {% endblock %}
 
 {% block nav %}
@@ -17,18 +18,29 @@
 {% block main %}
         <section class="account">
             <h1 class="font2-l">Manage your account</h1>
-            <form class="change-pass font1-link" action="/account" method="post">
+            <form id="change-pass-form" class="change-pass font1-link" action="/account" method="post">
                 <h2 class="font1-l">Change your Password:</h2>
-                <label for="password">Current Password</label>
-                <input class="font1-link" type="password" name="password" id="password" placeholder="password">
-                <label for="new-password">New Password</label>
-                <input class="font1-link" type="password" name="new-password" id="new-password" placeholder="new_password">
+                <label class="c9" for="password">Current Password</label>
+                <input class="font1-link" type="password" name="password" id="password">
+                <label class="c9" for="new-password">New Password</label>
+                <input class="font1-link" type="password" name="new-password" id="new-password">
                 <button class="botao terciario font1-button" type="submit">Change Password</button>
             </form>
-            <form class="delete font1-link" action="/delete" method="post">
+            <form id="del-chap-form" class="delete font1-l" action="/delete" method="post">
                 <label for="delete">Delete a chapter:</label>
                 <input class="font1-link" type="text" name="delete" id="delete" placeholder="Chapter Number" autocomplete="off">
                 <button type="submit" class="botao secundario font1-button">Delete Chapter</button>
+            </form>
+            <button id="delete-btn" type="button" class="botao red font1-button">Delete Account</button>
+            <form id="del-user-form" class="hidden" action="/delete_user" method="post">
+                <p class="font1-s">Are you sure you want to <span class="dest-red">delete your account</span>?</p>
+                <h2 class="font1-l">This action cannot be undone.</h2>
+                <label for="password" class="font1-s">Confirm your password:</label>
+                <input class="font1-link" name="password" type="password">
+                <div>
+                    <button class="botao red font1-button" type="submit">Yes, delete my account</button>
+                    <button id="take-back-btn" class="botao primario font1-button" type="button">No, take me back</button>
+                </div>
             </form>
         </section>
 {% endblock %}

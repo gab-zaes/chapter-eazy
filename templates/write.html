@@ -42,6 +42,7 @@
                 <input class="font1-link" name="chapter_name" type="text" autocomplete="off" required>
                 <button class="botao discreto font1-button" type="submit">Create Chapter</button>
             </form>
+            <button id="x-new-chapter" type="button" class="x font1-button">x</button>
         </div>
         <div class="grid-write">
             <div class="chapters">
@@ -95,11 +96,19 @@
                 <div class="documento-escrita">
                     <section>
                         <h3 class="font2-index faded-gray">{{ current_index | romans }}</h3>
-                        <h1 class="font2-l" id="chapter_title_h1">{{ current_chapter }}</h1>
+                        <button type="button" class="font2-l" id="chapter_title_h1">{{ current_chapter }}</button>
                         <div class="paper-cont">
                             <textarea class="paper font3-body" name="chapter_body" rows="1" autocomplete="off">{{ chapter_body }}</textarea>
                         </div>
                     </section>
+                </div>
+                <div id="rename-chapter" class="hidden">
+                    <form class="form" action="/rename_chapter" method="post">
+                        <label class="font1-link-bold" for="new_name">Rename Chapter:</label>
+                        <input class="font1-link" type="text" name="new_name" placeholder="New Name">
+                        <button type="submit" class="botao primario font1-button">change name</button>
+                        <button id="x-rename" type="button" class="x font1-button">x</button>
+                    </form>
                 </div>
             </div>
         </div>

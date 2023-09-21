@@ -25,7 +25,7 @@
 }
 
 .account:first-child form {
-    margin-bottom: 40px;
+    margin-bottom: 10px;
 }
 
 .account form {
@@ -40,4 +40,18 @@
 
 .account h2 {
     margin-bottom: 20px;
+}
+
+#delete-btn {
+    margin-bottom: 30px;
+}
+
+#del-user-form input {
+    margin-bottom: 30px;
+}
+
+#del-user-form div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }

@@ -112,8 +112,7 @@ def login():
         
         # If password dont match or there is no username, than return apology
         if len(rows) != 1 or not check_password_hash(rows[0][1], request.form.get("password")):
-            flash("Invalid username and/or password", "warning")
-            return redirect("/login")
+            return apology("wrong username or password", 403)
 
         # Start user session
         session["user_id"] = rows[0][0]
@@ -291,6 +290,29 @@ def set_chapter():
     return redirect("/write")
 
 
+@app.route("/rename_chapter", methods=["POST"])
+@login_required
+def rename_chapter():
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    new_name = request.form.get("new_name")
+    current_name = db.execute("SELECT chapter_name FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    index = db.execute("SELECT chapter_index FROM books WHERE user_id = ? AND chapter_name = ? AND title = ?", (session["user_id"], current_name, current_title,)).fetchone()[0]
+    
+
+    if new_name:
+        # update table
+        db.execute("UPDATE books SET chapter_name = ? WHERE user_id = ? AND chapter_index = ? AND title = ?", (new_name, session["user_id"], index, current_title,))
+        db.execute("UPDATE active SET chapter_name = ? WHERE user_id = ?", (new_name, session["user_id"],))
+        con.commit()
+        flash("Chapter renamed", "save")
+
+    con.close()
+    return redirect("/write")
+
+
 @app.route("/export", methods=["GET", "POST"])
 @login_required
 def export():
@@ -435,8 +457,57 @@ def account():
 @app.route("/delete", methods=["POST"])
 @login_required
 def delete():
-    """Deletes the user in database"""
-    # check for password again
-    ...
-    flash("You have deleted your account.")
-    return redirect("logout")
+    """Deletes chapter in database"""
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    # check if input is numeric
+    try:
+        index = int(request.form.get("delete"))
+    except ValueError:
+        flash("Invalid input", "warning")
+        redirect("/account")
+
+    current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    rows = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
+    chapters = [row[0] for row in rows]
+
+    # delete chapter if index is valid
+    if len(chapters) >= index > 0:
+        result = db.execute("DELETE FROM books WHERE user_id = ? AND chapter_index = ?", (session["user_id"], index))
+        print(result)
+        flash("You have deleted one chapter", "save")
+
+        # update other chapters indexes
+        for i in range(index + 1, len(chapters) + 1):
+            db.execute("UPDATE books SET chapter_index = ? WHERE user_id = ? AND chapter_index = ? AND title = ?", (i - 1, session["user_id"], i, current_title))
+
+    else:
+        flash("Input is out of range", "warning")
+        return redirect("/account")
+
+    con.commit()
+    con.close()
+    
+    return redirect("/write")
+
+
+@app.route("/delete_user", methods=["POST"])
+@login_required
+def delete_user():
+    """Deletes user in database"""
+    con = sqlite3.connect("chaptereasy.db", check_same_thread=False)
+    db = con.cursor()
+
+    # first check for password
+    password_hash = db.execute("SELECT hash FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    if check_password_hash(password_hash, request.form.get("password")):
+        # then delete user from tables
+        db.execute("DELETE FROM books WHERE user_id = ?", (session["user_id"],))
+        db.execute("DELETE FROM active WHERE user_id = ?", (session["user_id"],))
+        db.execute("DELETE FROM users WHERE user_id = ?", (session["user_id"],))
+
+    con.commit()
+    con.close()
+    flash("You have deleted your account", "save")
+    return redirect("/logout")

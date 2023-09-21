@@ -102,6 +102,10 @@
     background-color: var(--dest-blue);
 }
 
+.red:hover {
+    background-color: orangered;
+}
+
 @media (max-width: 800px) {
     .botao {
         padding: 14px 16px;
@@ -111,4 +115,9 @@
     nav ul {
         display: none;
     }
+}
+
+.red {
+    color: white;
+    background-color: red;
 }

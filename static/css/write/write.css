@@ -168,14 +168,16 @@
     min-height: 800px;
 }
 
-.documento-escrita h1,
+.documento-escrita button,
 .documento-escrita h3 {
     background-color: white;
     text-align: center;
 }
 
-.documento-escrita h1 {
+.documento-escrita button {
+    width: 100%;
     color: black;
+    display: block;
     padding-bottom: 60px;
 }
 
@@ -204,6 +206,38 @@ footer {
 footer button {
     padding: 16px;
     color: var(--c1);
+}
+
+#rename-chapter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#rename-chapter .form {
+    background-color: var(--c1);
+    padding: 40px 20px;
+}
+
+#rename-chapter label {
+    display: block;
+    margin-bottom: 20px;
+}
+
+#chapter_title_h1 {
+    cursor: pointer;
+}
+
+.x {
+    position: absolute;
+    right: 10px;
+    top: 130px;
+    background-color: transparent;
+}
+
+.windowed .x {
+    top: 10px;
 }
 
 @media (max-width: 1400px) {

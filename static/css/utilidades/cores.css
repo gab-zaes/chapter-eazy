@@ -16,12 +16,48 @@
     --dest-blue: #C9FFFA;
 }
 
+.c1 {
+    color: var(--c1);
+}
+
+.c2 {
+    color: var(--c2);
+}
+
+.c3 {
+    color: var(--c3);
+}
+
+.c4 {
+    color: var(--c4);
+}
+
 .c5 {
     color: var(--c5);
 }
 
+.c6 {
+    color: var(--c6);
+}
+
+.c7 {
+    color: var(--c7);
+}
+
+.c8 {
+    color: var(--c8);
+}
+
+.c9 {
+    color: var(--c9);
+}
+
 .c10 {
     color: var(--c10);
+}
+
+.c11 {
+    color: var(--c11);
 }
 
 .faded-gray {
