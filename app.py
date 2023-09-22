@@ -163,8 +163,16 @@ def write():
         chapters = []
     username = db.execute("SELECT username FROM users WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
     if current_chapter:
-        chapter_body = db.execute("SELECT chapter_body FROM books WHERE chapter_name = ?", (current_chapter,)).fetchone()[0]
-        current_index = 1 + chapters.index(current_chapter)
+        try:
+            chapter_body = db.execute("SELECT chapter_body FROM books WHERE chapter_name = ?", (current_chapter,)).fetchone()[0]
+        except TypeError:
+            chapter_body = "    "
+
+        try:
+            current_index = 1 + chapters.index(current_chapter)
+        except ValueError:
+            current_index = 1
+
     else:
         # if there is no chapters yet
         current_index = 1
@@ -466,21 +474,33 @@ def delete():
         index = int(request.form.get("delete"))
     except ValueError:
         flash("Invalid input", "warning")
-        redirect("/account")
+        return redirect("/account")
 
-    current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    try:
+        current_title = db.execute("SELECT title FROM active WHERE user_id = ?", (session["user_id"],)).fetchone()[0]
+    except TypeError:
+        flash("No chapters to delete yet", "warning")
+        return redirect("/")
+
     rows = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? ORDER BY chapter_index ASC", (session["user_id"], current_title)).fetchall()
     chapters = [row[0] for row in rows]
 
     # delete chapter if index is valid
     if len(chapters) >= index > 0:
-        result = db.execute("DELETE FROM books WHERE user_id = ? AND chapter_index = ?", (session["user_id"], index))
-        print(result)
+        result = db.execute("DELETE FROM books WHERE user_id = ? AND chapter_index = ?", (session["user_id"], index)) 
         flash("You have deleted one chapter", "save")
 
         # update other chapters indexes
         for i in range(index + 1, len(chapters) + 1):
             db.execute("UPDATE books SET chapter_index = ? WHERE user_id = ? AND chapter_index = ? AND title = ?", (i - 1, session["user_id"], i, current_title))
+
+
+        # get actual first chapter
+        try:
+            first_chapter = db.execute("SELECT chapter_name FROM books WHERE user_id = ? AND title = ? AND chapter_index = 1", (session["user_id"], current_title)).fetchone()[0]
+            db.execute("UPDATE active SET chapter_name = ? WHERE user_id = ?", (first_chapter, session["user_id"]))
+        except TypeError:
+            db.execute("DELETE FROM active WHERE user_id = ?", (session["user_id"],))
 
     else:
         flash("Input is out of range", "warning")
@@ -507,7 +527,10 @@ def delete_user():
         db.execute("DELETE FROM active WHERE user_id = ?", (session["user_id"],))
         db.execute("DELETE FROM users WHERE user_id = ?", (session["user_id"],))
 
+    else:
+        flash("Wrong password", "warning")
+        return redirect("/account")
+
     con.commit()
     con.close()
-    flash("You have deleted your account", "save")
-    return redirect("/logout")
+    return redirect("/logout"), flash("You have deleted your account", "save")

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Write
+    Write | Chapter-easy
 {% endblock %}
 
 {% block script %}
@@ -15,9 +15,6 @@
 {% endblock %}
 
 {% block nav %}
-    <ul>
-        <li><a class="font1-link" href="/write">Write</a></li>
-        <li><a class="font1-link" href="/export">Export</a></li>
         <li>
             <form id="save-form" action="/save" method="post">
                 <input name="chapter_name" type="hidden" value="{{ current_chapter }}">
@@ -29,7 +26,6 @@
                 </div>
             </form>
         </li>
-    </ul>
 {% endblock %}
 
 {% block main %}

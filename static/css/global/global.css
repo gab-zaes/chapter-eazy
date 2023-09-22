@@ -190,8 +190,17 @@ nav a::after {
     transition: 0.3s;
 }
 
-nav a:hover:after {
+nav a:hover::after,
+nav a.ativo::after {
     width: 100%;
+}
+
+nav a.ativo::after {
+    transition: none;
+}
+
+#logo-link::after {
+    display: none;
 }
 
 @media (max-width: 800px) {

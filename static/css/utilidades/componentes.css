@@ -79,7 +79,10 @@
 
 .capitulo {
     padding: 18px 22px 18px 22px;
+    box-sizing: border-box;
     margin-bottom: 6px;
+    margin-left: auto;
+    margin-right: auto;
     background-color: var(--c3);
     color: white;
     border-radius: 5px;

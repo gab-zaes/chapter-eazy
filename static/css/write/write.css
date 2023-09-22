@@ -49,19 +49,23 @@
 .chapters {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    border-right: 1px solid white;
+    row-gap: 10px;
+    border-right: 2px solid var(--c10);
 }
 
 .chapters-list {
     display: flex;
     flex-direction: column;
     place-items: center;
+    place-content: center;
+    min-width: 100%;
 }
 
 .chapters-list ul {
-    padding-left: 10px;
-    padding-right: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-left: 0px;
+    min-width: 200px;
 }
 
 .form.chapter {
@@ -249,11 +253,11 @@ footer button {
         display: grid;
         grid-template-columns: 1fr;
     }
-    
+
     .chapters-list ul {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px 20px;
+        gap: 10px 10px;
         place-content: center;
     }
 
@@ -272,6 +276,8 @@ footer button {
         display: flex;
         align-items: center;
         cursor: pointer;
+        width: fit-content;
+        max-width: 250px;
     }
 }
 
